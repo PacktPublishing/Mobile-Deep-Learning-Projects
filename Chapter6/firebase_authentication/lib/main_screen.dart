@@ -62,10 +62,10 @@ class _MainScreenState extends State<MainScreen> {
         onSignedIn: _onSignedIn,
       );
     } else {
-      return new HomeScreen(
-        userId: _userId,
-        auth: widget.auth,
-        onSignedOut: _onSignedOut,
+       return new HomeScreen(
+      //   userId: _userId,
+      //   auth: widget.auth,
+      //   onSignedOut: _onSignedOut,
         );
     }
   }

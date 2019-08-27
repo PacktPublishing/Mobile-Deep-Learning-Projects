@@ -14,7 +14,6 @@ class SignupSigninScreen extends StatefulWidget {
 enum FormMode { SIGNIN, SIGNUP }
 
 class MaliciousUserException implements Exception { 
-    //String message = 'Malicious login! Please try later.';
    String message() => 'Malicious login! Please try later.'; 
 }  
 
@@ -52,8 +51,8 @@ class _SignupSigninScreenState extends State<SignupSigninScreen> {
         if (_formMode == FormMode.SIGNIN) {
           var val = await widget.auth.isValidUser(_usermail, _userpassword);
           if(val < 0.20) {
-            //throw new MaliciousUserException();
-            }
+            throw new MaliciousUserException();
+          }
           userId = await widget.auth.signIn(_usermail, _userpassword);
         } else {
           userId = await widget.auth.signUp(_usermail, _userpassword);
@@ -66,7 +65,8 @@ class _SignupSigninScreenState extends State<SignupSigninScreen> {
           widget.onSignedIn();
         }
 
-      } catch(MaliciousUserException) {
+      } 
+      catch(MaliciousUserException) {
         setState(() {
           _loading = false;
             _errorMessage = 'Malicious user detected. Please try again later.';
