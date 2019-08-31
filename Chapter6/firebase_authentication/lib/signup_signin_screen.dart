@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_authentication/auth.dart';
+import 'package:flutter_recaptcha_v2/flutter_recaptcha_v2.dart';
 
 class SignupSigninScreen extends StatefulWidget {
   SignupSigninScreen({this.auth, this.onSignedIn});
@@ -18,7 +19,9 @@ class MaliciousUserException implements Exception {
 }  
 
 class _SignupSigninScreenState extends State<SignupSigninScreen> {
+  
   final _formKey = new GlobalKey<FormState>();
+  RecaptchaV2Controller recaptchaV2Controller = RecaptchaV2Controller();
 
   String _usermail;
   String _userpassword;
@@ -50,9 +53,9 @@ class _SignupSigninScreenState extends State<SignupSigninScreen> {
       try {
         if (_formMode == FormMode.SIGNIN) {
           var val = await widget.auth.isValidUser(_usermail, _userpassword);
-          if(val < 0.20) {
-            throw new MaliciousUserException();
-          }
+          // if(val < 0.20) {
+          //   throw new MaliciousUserException();
+          // }
           userId = await widget.auth.signIn(_usermail, _userpassword);
         } else {
           userId = await widget.auth.signUp(_usermail, _userpassword);
@@ -66,12 +69,13 @@ class _SignupSigninScreenState extends State<SignupSigninScreen> {
         }
 
       } 
-      catch(MaliciousUserException) {
-        setState(() {
-          _loading = false;
-            _errorMessage = 'Malicious user detected. Please try again later.';
-        });
-      }  catch (e) {
+      // catch(MaliciousUserException) {
+      //   setState(() {
+      //     _loading = false;
+      //       _errorMessage = 'Malicious user detected. Please try again later.';
+      //   });
+      // }  
+      catch (e) {
         print('Error: $e');
         setState(() {
           _loading = false;
@@ -117,6 +121,7 @@ class _SignupSigninScreenState extends State<SignupSigninScreen> {
           children: <Widget>[
             _createBody(),
             _createCircularProgress(),
+            _createRecaptcha()
           ],
         ));
   }
@@ -228,8 +233,28 @@ class _SignupSigninScreenState extends State<SignupSigninScreen> {
                     style: new TextStyle(fontSize: 20.0, color: Colors.white))
                 : new Text('Create account',
                     style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: _signinSignup,
+            onPressed: recaptchaV2Controller.show,
           ),
         ));
   }
+
+  Widget _createRecaptcha() {
+    return RecaptchaV2(
+      apiKey: "6LfN7bUUAAAAAISpmXIbNuFEq6ov7Xc7b5f5-sWg", // for enabling the reCaptcha
+      apiSecret: "6LfN7bUUAAAAAMAlTF3Owo2_WP5azInboRpKL-Pn", // for verifying the responded token
+      controller: recaptchaV2Controller,
+      onVerifiedError: (err){
+        print(err);
+      },
+      onVerifiedSuccessfully: (success) {
+        setState(() {
+        if (success) {
+          _signinSignup();
+        } else {
+          // "Failed to verify.
+        }
+        });
+      },
+    );
+  }  
 }
