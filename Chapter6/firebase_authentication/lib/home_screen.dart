@@ -39,8 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
           ],
         ),
-         body: Text('Hello User',
-         style: new TextStyle(fontSize: 32.0)),
+         body: Center(child: new Text('Hello User', 
+         style: new TextStyle(fontSize: 32.0))
+         ),
     );
   }
 }

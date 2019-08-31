@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_authentication/auth.dart';
+import 'package:flutter_recaptcha_v2/flutter_recaptcha_v2.dart';
 
 class SignupSigninScreen extends StatefulWidget {
   SignupSigninScreen({this.auth, this.onSignedIn});
@@ -14,12 +15,13 @@ class SignupSigninScreen extends StatefulWidget {
 enum FormMode { SIGNIN, SIGNUP }
 
 class MaliciousUserException implements Exception { 
-    //String message = 'Malicious login! Please try later.';
    String message() => 'Malicious login! Please try later.'; 
 }  
 
 class _SignupSigninScreenState extends State<SignupSigninScreen> {
+  
   final _formKey = new GlobalKey<FormState>();
+  RecaptchaV2Controller recaptchaV2Controller = RecaptchaV2Controller();
 
   String _usermail;
   String _userpassword;
@@ -52,8 +54,8 @@ class _SignupSigninScreenState extends State<SignupSigninScreen> {
         if (_formMode == FormMode.SIGNIN) {
           var val = await widget.auth.isValidUser(_usermail, _userpassword);
           if(val < 0.20) {
-            //throw new MaliciousUserException();
-            }
+            throw new MaliciousUserException();
+          }
           userId = await widget.auth.signIn(_usermail, _userpassword);
         } else {
           userId = await widget.auth.signUp(_usermail, _userpassword);
@@ -71,7 +73,8 @@ class _SignupSigninScreenState extends State<SignupSigninScreen> {
           _loading = false;
             _errorMessage = 'Malicious user detected. Please try again later.';
         });
-      }  catch (e) {
+      }  
+      catch (e) {
         print('Error: $e');
         setState(() {
           _loading = false;
@@ -117,6 +120,7 @@ class _SignupSigninScreenState extends State<SignupSigninScreen> {
           children: <Widget>[
             _createBody(),
             _createCircularProgress(),
+            _createRecaptcha()
           ],
         ));
   }
@@ -228,8 +232,28 @@ class _SignupSigninScreenState extends State<SignupSigninScreen> {
                     style: new TextStyle(fontSize: 20.0, color: Colors.white))
                 : new Text('Create account',
                     style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: _signinSignup,
+            onPressed: recaptchaV2Controller.show,
           ),
         ));
   }
+
+  Widget _createRecaptcha() {
+    return RecaptchaV2(
+      apiKey: "Enter Site Key here", // for enabling the reCaptcha
+      apiSecret: "Enter API Key here", // for verifying the responded token
+      controller: recaptchaV2Controller,
+      onVerifiedError: (err){
+        print(err);
+      },
+      onVerifiedSuccessfully: (success) {
+        setState(() {
+        if (success) {
+          _signinSignup();
+        } else {
+          print('Failed to verify');
+        }
+        });
+      },
+    );
+  }  
 }

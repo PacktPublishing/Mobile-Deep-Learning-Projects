@@ -30,6 +30,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   firebase_auth:
+  flutter_recaptcha_v2:
 
 
 # For information on the generic Dart part of this file, see the

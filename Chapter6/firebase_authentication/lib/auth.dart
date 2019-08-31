@@ -37,10 +37,10 @@ class Auth implements BaseAuth {
 
   Future<double> isValidUser(String email, String password) async{
     final response = await http.Client()
-        .get('http://34.67.126.237:8000/login?user=$email&password=$password');
+        .get('http://34.67.160.232:8000/login?user=$email&password=$password');
       var jsonResponse = json.decode(response.body);
       var val = '${jsonResponse["result"]}';
-      double responseValue = double.parse(val);      
-      return responseValue; 
+      double result = double.parse(val);      
+      return result; 
     }
 }
