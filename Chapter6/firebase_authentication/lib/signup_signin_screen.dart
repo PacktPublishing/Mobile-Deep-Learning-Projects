@@ -67,14 +67,17 @@ class _SignupSigninScreenState extends State<SignupSigninScreen> {
         if (userId != null && userId.length > 0 && _formMode == FormMode.SIGNIN) {
           widget.onSignedIn();
         }
-
       } catch(MaliciousUserException) {
         setState(() {
           _loading = false;
             _errorMessage = 'Malicious user detected. Please try again later.';
         });
-      }  
-      catch (e) {
+      } catch(MaliciousUserException) {
+        setState(() {
+          _loading = false;
+            _errorMessage = 'Malicious user detected. Please try again later.';
+        });
+      }  catch (e) {
         print('Error: $e');
         setState(() {
           _loading = false;
@@ -255,5 +258,5 @@ class _SignupSigninScreenState extends State<SignupSigninScreen> {
         });
       },
     );
-  }  
+  }   
 }
