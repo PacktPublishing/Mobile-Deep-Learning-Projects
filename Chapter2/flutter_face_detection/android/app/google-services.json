@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "972163913703",
+    "firebase_url": "https://flutter-face-detection-27067.firebaseio.com",
+    "project_id": "flutter-face-detection-27067",
+    "storage_bucket": "flutter-face-detection-27067.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:972163913703:android:4180123f418b6a63558f42",
+        "android_client_info": {
+          "package_name": "com.example.flutter_face_detection"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "972163913703-8b8p3ft4i233f19sj91deqhafbkp0g35.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_face_detection",
+            "certificate_hash": "8df6b49f7e21fa9a3b6552e5ffd48b38ba96149f"
+          }
+        },
+        {
+          "client_id": "972163913703-g55h6c4n1c59l9jsvnu8fa636q3oe985.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8bLy2ycP6E8bFVk-XlFWgYajQ8rJz9io"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "972163913703-g55h6c4n1c59l9jsvnu8fa636q3oe985.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
