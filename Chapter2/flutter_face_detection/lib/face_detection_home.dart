@@ -14,7 +14,6 @@ class _FaceDetectorHomeState extends State<FaceDetectorHome> {
   File image;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  File _file;
 
   @override
   Widget build(BuildContext context) {
