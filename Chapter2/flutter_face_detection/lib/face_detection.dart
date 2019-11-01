@@ -13,73 +13,87 @@ class FaceDetection extends StatefulWidget {
 }
 
 class _FaceDetectionState extends State<FaceDetection> {
-  var _image;
-  List<Face> faces;
+  ui.Image image;
+  List<Face> _faces;
+  var result = "";
+
+  @override
+  void initState() {
+    super.initState();
+    detectFaces();
+  }
 
   @override
   Widget build(BuildContext context) {
-    detectFaces();
-    return  Scaffold(
-      appBar: AppBar(),
-      body: Container(
-      child: Column(
-        children: <Widget>[
-             Image.file(widget.file),
-             //faceDetectList(faces),
-        ],
-      ),
-    ));
+    return Scaffold(
+      body: (image == null) ? Center(child: CircularProgressIndicator(),): 
+      Center(
+        child: FittedBox(
+          child: SizedBox(
+            width: image.width.toDouble(),
+            height: image.width.toDouble(),
+            child: CustomPaint(painter: FacePainter(image, _faces))
+          ),
+        ),
+      )
+    );
   }
+
+   _loadImage(File file) async {
+    final data = await file.readAsBytes();
+    await decodeImageFromList(data).then(
+      (value) => setState(() {
+        image = value;
+      }),
+    );
+  }
+
 
   void detectFaces() async{
     final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(widget.file);
-    final FaceDetector faceDetector = FirebaseVision.instance.faceDetector();
-    faces = await faceDetector.processImage(visionImage);
-    print("DETECTED FACES: $faces");
-    faceDetectList(faces);
-  }
-
-  Widget faceDetectList(List<Face> labels) {
-    print("$labels");
-    if (labels != null) {
-      print("Labels is not null $labels.length");
-      if (labels.length == 0) {
-        print("Labels length is zero");
-        return Expanded(
-          flex: 1,
-          child: Center(
-            child: Text('Nothing detected'),
-          ),
-        );
-      }
-      return Expanded(
-        flex: 1,
-        child: Container(
-          child: ListView.builder(
-              padding: const EdgeInsets.all(1.0),
-              itemCount: labels != null ? labels.length : 0,
-              itemBuilder: (context, i) {
-                var text;
-                final face = labels[i];
-                Face res = face;
-                text = "Raw Value for face: Smiling Probablity: ${res.smilingProbability} with tracking id ${res.trackingId}";
-                print("VALUE $text");
-                return _buildTextRow(text);
-              }),
-        ),
-      );
+    final FaceDetector faceDetector = FirebaseVision.instance.faceDetector(FaceDetectorOptions(
+        mode: FaceDetectorMode.accurate,
+        enableLandmarks: true,
+        enableClassification: true
+        ));
+    List<Face> faces = await faceDetector.processImage(visionImage);
+    for (var i = 0; i < faces.length; i++) {
+      final double smileProb = faces[i].smilingProbability;
+      print("Smiling:: $smileProb");
     }
-    print("Label is null");
-    return Container();
+    setState(() {
+      _faces = faces;
+      _loadImage(widget.file);
+    });
+  }
+}
+
+class FacePainter extends CustomPainter {
+  final ui.Image image;
+  final List<Face> faces;
+  final List<Rect> rects = [];
+
+  FacePainter(this.image, this.faces) {
+    for (var i = 0; i < faces.length; i++) {
+      rects.add(faces[i].boundingBox);
+    }
   }
 
-    Widget _buildTextRow(text) {
-      print("Build list row called");
-    return ListTile(
-      title: Text(
-        "$text",
-      ),
-      dense: true,
-    );
+  @override
+  void paint(ui.Canvas canvas, ui.Size size) {
+    final Paint paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 15.0
+      ..color = Colors.yellow;
+
+    canvas.drawImage(image, Offset.zero, Paint());
+    for (var i = 0; i < faces.length; i++) {
+      canvas.drawRect(rects[i], paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(FacePainter oldDelegate) {
+    return image != oldDelegate.image || faces != oldDelegate.faces;
   }
 }
