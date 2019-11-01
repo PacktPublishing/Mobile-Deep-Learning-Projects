@@ -26,6 +26,9 @@ class _FaceDetectionState extends State<FaceDetection> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Face Detection"),
+      ),
       body: (image == null) ? Center(child: CircularProgressIndicator(),): 
       Center(
         child: FittedBox(
@@ -83,8 +86,8 @@ class FacePainter extends CustomPainter {
   void paint(ui.Canvas canvas, ui.Size size) {
     final Paint paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 15.0
-      ..color = Colors.yellow;
+      ..strokeWidth = 8.0
+      ..color = Colors.red;
 
     canvas.drawImage(image, Offset.zero, Paint());
     for (var i = 0; i < faces.length; i++) {
