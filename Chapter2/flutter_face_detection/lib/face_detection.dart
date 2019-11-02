@@ -5,8 +5,11 @@ import 'dart:ui';
 
 class FaceDetection extends StatefulWidget {
 
-  final File file; 
-  FaceDetection(this.file);
+  File file; 
+  FaceDetection(File file) {
+    this.file = file;
+  }
+  // FaceDetection(this.file);
 
   @override
   _FaceDetectionState createState() => _FaceDetectionState();
@@ -14,7 +17,7 @@ class FaceDetection extends StatefulWidget {
 
 class _FaceDetectionState extends State<FaceDetection> {
   Image image;
-  List<Face> _faces;
+  List<Face> faces;
   var result = "";
 
   @override
@@ -35,14 +38,14 @@ class _FaceDetectionState extends State<FaceDetection> {
           child: SizedBox(
             width: image.width.toDouble(),
             height: image.width.toDouble(),
-            child: CustomPaint(painter: FacePainter(image, _faces))
+            child: CustomPaint(painter: FacePainter(image, faces))
           ),
         ),
       )
     );
   }
 
-   _loadImage(File file) async {
+   void loadImage(File file) async {
     final data = await file.readAsBytes();
     await decodeImageFromList(data).then(
       (value) => setState(() {
@@ -59,24 +62,24 @@ class _FaceDetectionState extends State<FaceDetection> {
         enableLandmarks: true,
         enableClassification: true
         ));
-    List<Face> faces = await faceDetector.processImage(visionImage);
-    for (var i = 0; i < faces.length; i++) {
-      final double smileProb = faces[i].smilingProbability;
-      print("Smiling:: $smileProb");
+    List<Face> detectedFaces = await faceDetector.processImage(visionImage);
+    for (var i = 0; i < detectedFaces.length; i++) {
+      final double smileProbablity = detectedFaces[i].smilingProbability;
+      print("Smiling Probablity for $i: $smileProbablity");
     }
-    setState(() {
-      _faces = faces;
-      _loadImage(widget.file);
-    });
+      faces = detectedFaces;
+      loadImage(widget.file);
   }
 }
 
 class FacePainter extends CustomPainter {
-  final Image image;
-  final List<Face> faces;
+  Image image;
+  List<Face> faces;
   final List<Rect> rects = [];
 
-  FacePainter(this.image, this.faces) {
+  FacePainter(Image img, List<Face> faces) {
+    this.image = img;
+    this.faces = faces;
     for (var i = 0; i < faces.length; i++) {
       rects.add(faces[i].boundingBox);
     }

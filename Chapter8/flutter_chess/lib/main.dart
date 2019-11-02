@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chess/chess_game_2.dart';
-import 'chess_board.dart';
+import 'package:flutter_chess/chess_game.dart';
 
 void main() => runApp(MyApp());
 
@@ -8,11 +7,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Chess',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Chess'),
     );
   }
 }
@@ -35,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            ChessGame2()
+            ChessGame()
           ],
         ),
       ),

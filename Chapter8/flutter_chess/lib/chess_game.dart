@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 
-class ChessGame2 extends StatefulWidget {
+class ChessGame extends StatefulWidget {
   
   var squareList = [
   ["a8","b8","c8","d8","e8","f8","g8","h8"],
@@ -18,10 +18,10 @@ class ChessGame2 extends StatefulWidget {
 var size= 200;
 
   @override
-  _ChessGame2State createState() => _ChessGame2State();
+  _ChessGameState createState() => _ChessGameState();
 }
 
-class _ChessGame2State extends State<ChessGame2> {
+class _ChessGameState extends State<ChessGame> {
 
   HashMap board = new HashMap<String, String>();
 
