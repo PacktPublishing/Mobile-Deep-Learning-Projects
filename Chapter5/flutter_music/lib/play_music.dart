@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_midi/flutter_midi.dart';
+import 'package:flutter/services.dart';
 
 class PlayMusic extends StatefulWidget {
   @override
@@ -6,6 +8,13 @@ class PlayMusic extends StatefulWidget {
 }
 
 class _PlayMusicState extends State<PlayMusic> {
+
+   @override
+  void initState() {
+    load('assets/sample1.mid');
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +34,9 @@ class _PlayMusicState extends State<PlayMusic> {
     return Center(
       child: RaisedButton(
         child: Text("Play"),
-        onPressed: () {},
+        onPressed: () {
+           FlutterMidi.playMidiNote(midi: 60);
+        },
         ),
       );
   }
@@ -38,4 +49,11 @@ class _PlayMusicState extends State<PlayMusic> {
         ),
       );
   }
+
+   void load(String asset) async {
+    FlutterMidi.unmute(); // Optionally Unmute
+    ByteData _byte = await rootBundle.load(asset);
+    FlutterMidi.prepare(sf2: _byte);
+  }
+
 }
