@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 class FaceDetection extends StatefulWidget {
 
@@ -16,7 +16,7 @@ class FaceDetection extends StatefulWidget {
 }
 
 class _FaceDetectionState extends State<FaceDetection> {
-  Image image;
+  ui.Image image;
   List<Face> faces;
   var result = "";
 
@@ -73,11 +73,11 @@ class _FaceDetectionState extends State<FaceDetection> {
 }
 
 class FacePainter extends CustomPainter {
-  Image image;
+  ui.Image image;
   List<Face> faces;
   final List<Rect> rects = [];
 
-  FacePainter(Image img, List<Face> faces) {
+  FacePainter(ui.Image img, List<Face> faces) {
     this.image = img;
     this.faces = faces;
     for (var i = 0; i < faces.length; i++) {
