@@ -15,8 +15,8 @@ from collections import OrderedDict
 
 app = Flask(__name__)
 
-model = load_model('securitai-lstm-model.h5')
-model.load_weights('securitai-lstm-weights.h5')
+model = load_model('lstm-model.h5')
+model.load_weights('lstm-weights.h5')
 model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
 model._make_predict_function()
 
