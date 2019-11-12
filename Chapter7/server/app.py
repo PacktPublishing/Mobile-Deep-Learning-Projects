@@ -72,9 +72,9 @@ def generate():
     outputfile = 'output_%s.mid' % (epoch_time)
     mid.save("Output/" + outputfile)
 
-    path = "Output/"+outputfile
+    response = {'result': outputfile}
 
-    return send_file(path, mimetype="audio/midi", as_attachment=True)
+    return jsonify(response)
 
 if __name__ == '__main__':
     app.run()
