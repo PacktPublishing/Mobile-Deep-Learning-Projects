@@ -53,16 +53,23 @@ class _PlayMusicState extends State<PlayMusic> {
       );
   }
 
+
       play() async {
-        var url = "34.70.80.18:8000/download/output_1573589840.mid";
+        var url = 'http://34.70.80.18:8000/download/output_1573589840.mid';
+        var url2 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
         AudioPlayer audioPlayer = AudioPlayer();
         AudioPlayer.logEnabled = true;
-        int result = await audioPlayer.play(url);
-        if (result == 1) {
-          print('Success');
-      // success
-      }
+        //int result = 
+        audioPlayer.play(url2);
+      //   print('RESULT:: $result');
+      //   if (result == 1) {
+      //     print('Success');
+      // }
+
+  
     }
+
+
   
 
   void load() {
@@ -77,7 +84,6 @@ class _PlayMusicState extends State<PlayMusic> {
 
   if (response.statusCode == 200) {
     var v = json.decode(response.body);
-    print('SUCCESS:: ${v['response']}');
     return Response.fromJson(json.decode(response.body));
   } else {
     // If that call was not successful, throw an error.
