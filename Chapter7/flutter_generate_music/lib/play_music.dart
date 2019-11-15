@@ -27,6 +27,7 @@ class _PlayMusicState extends State<PlayMusic> {
         title: Text("Generate Play Music"),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           buildPlayButton(),
           buildStopButton(),
@@ -37,8 +38,10 @@ class _PlayMusicState extends State<PlayMusic> {
   }
 
   Widget buildPlayButton() {
-    return Center(
-      child: RaisedButton(
+    
+     return Padding(
+       padding: EdgeInsets.all(16),
+       child: RaisedButton(
         child: Text("Play"),
         onPressed: () {
            play();
@@ -48,23 +51,27 @@ class _PlayMusicState extends State<PlayMusic> {
   }
 
   Widget buildStopButton() {
-    return Center(
+    return Padding( 
+      padding: EdgeInsets.all(16),
       child: RaisedButton(
         child: Text("stop"),
         onPressed: (){
           audioPlayer.stop();
         },
+        
       )
       );
   }
 
   Widget buildGenerateButton() {
-    return Center(
-      child: RaisedButton(
+     return Padding(
+       padding: EdgeInsets.all(16),
+       child: RaisedButton(
         child: Text("Generate Music"),
         onPressed: () {
           load();
         },
+        color: Colors.blue,
         ),
       );
   }
