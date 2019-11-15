@@ -11,6 +11,8 @@ class PlayMusic extends StatefulWidget {
 
 class _PlayMusicState extends State<PlayMusic> {
 
+  AudioPlayer audioPlayer = AudioPlayer();
+
    @override
   void initState() {
     super.initState();
@@ -25,6 +27,7 @@ class _PlayMusicState extends State<PlayMusic> {
       body: Column(
         children: <Widget>[
           buildPlayButton(),
+          buildStopButton(),
           buildGenerateButton()
         ],
       )
@@ -42,6 +45,17 @@ class _PlayMusicState extends State<PlayMusic> {
       );
   }
 
+  Widget buildStopButton() {
+    return Center(
+      child: RaisedButton(
+        child: Text("stop"),
+        onPressed: (){
+          audioPlayer.stop();
+        },
+      )
+      );
+  }
+
   Widget buildGenerateButton() {
     return Center(
       child: RaisedButton(
@@ -56,15 +70,11 @@ class _PlayMusicState extends State<PlayMusic> {
 
       play() async {
         var url = 'http://34.70.80.18:8000/download/output_1573589840.mid';
-        var url2 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
-        AudioPlayer audioPlayer = AudioPlayer();
         AudioPlayer.logEnabled = true;
-        //int result = 
-        audioPlayer.play(url2);
-      //   print('RESULT:: $result');
-      //   if (result == 1) {
-      //     print('Success');
-      // }
+        int result = await audioPlayer.play(url);
+        if (result == 1) {
+          print('Success');
+      }
 
   
     }
