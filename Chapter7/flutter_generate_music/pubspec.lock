@@ -7,7 +7,7 @@ packages:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.10"
+    version: "2.0.11"
   args:
     dependency: transitive
     description:
@@ -21,7 +21,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.0"
+    version: "2.4.0"
   audioplayers:
     dependency: "direct main"
     description:
@@ -76,18 +76,25 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_midi:
-    dependency: "direct main"
-    description:
-      name: flutter_midi
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
+  http:
+    dependency: "direct main"
+    description:
+      name: http
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.12.0+2"
+  http_parser:
+    dependency: transitive
+    description:
+      name: http_parser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.3"
   image:
     dependency: transitive
     description:
@@ -101,14 +108,14 @@ packages:
       name: matcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.5"
+    version: "0.12.6"
   meta:
     dependency: transitive
     description:
       name: meta
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.7"
+    version: "1.1.8"
   path:
     dependency: transitive
     description:
@@ -122,7 +129,7 @@ packages:
       name: path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.0"
+    version: "1.4.2"
   pedantic:
     dependency: transitive
     description:
@@ -197,7 +204,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.5"
+    version: "0.2.11"
   typed_data:
     dependency: transitive
     description:
