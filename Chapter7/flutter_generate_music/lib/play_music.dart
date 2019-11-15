@@ -12,6 +12,8 @@ class PlayMusic extends StatefulWidget {
 class _PlayMusicState extends State<PlayMusic> {
 
   AudioPlayer audioPlayer = AudioPlayer();
+  var baseUrl = 'http://34.70.80.18:8000/download/';
+  var output = 'output_1573589840.mid';
 
    @override
   void initState() {
@@ -22,7 +24,7 @@ class _PlayMusicState extends State<PlayMusic> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Play Music"),
+        title: Text("Generate Play Music"),
       ),
       body: Column(
         children: <Widget>[
@@ -69,7 +71,7 @@ class _PlayMusicState extends State<PlayMusic> {
 
 
       play() async {
-        var url = 'http://34.70.80.18:8000/download/output_1573589840.mid';
+        var url = baseUrl + output;
         AudioPlayer.logEnabled = true;
         int result = await audioPlayer.play(url);
         if (result == 1) {
@@ -91,9 +93,11 @@ class _PlayMusicState extends State<PlayMusic> {
   Future<Response> fetchResponse() async {
   final response =
       await http.get('http://34.70.80.18:8000/generate');
-
+  print('VALUE: ${response.statusCode}');
   if (response.statusCode == 200) {
     var v = json.decode(response.body);
+    var l = v["result"] ;
+    print('Response: ${l}');
     return Response.fromJson(json.decode(response.body));
   } else {
     // If that call was not successful, throw an error.
