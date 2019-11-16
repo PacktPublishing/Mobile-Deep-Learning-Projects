@@ -1,7 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:async';
 import 'dart:convert';
 
 class PlayMusic extends StatefulWidget {
@@ -12,10 +11,9 @@ class PlayMusic extends StatefulWidget {
 class _PlayMusicState extends State<PlayMusic> {
 
   AudioPlayer audioPlayer = AudioPlayer();
-  var baseUrl = 'http://34.70.80.18:8000/download/';
-  var output = 'output_1573589840.mid';
-  String result;
-  String load_text = 'Generate Music';
+  String baseUrl = 'http://34.70.80.18:8000/download/';
+  String fileName;
+  String loadText = 'Generate Music';
 
   @override
   void initState() {
@@ -31,9 +29,9 @@ class _PlayMusicState extends State<PlayMusic> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          buildGenerateButton(),
           buildPlayButton(),
           buildStopButton(),
-          buildGenerateButton(),
           buildLoadingText()
         ],
       )
@@ -58,7 +56,7 @@ class _PlayMusicState extends State<PlayMusic> {
     return Center(
       child: Padding(
         padding: EdgeInsets.only(top: 16),
-        child: Text(load_text)
+        child: Text(loadText)
       )
     );
   }
@@ -69,12 +67,16 @@ class _PlayMusicState extends State<PlayMusic> {
       child: RaisedButton(
         child: Text("Stop"),
         onPressed: (){
-          audioPlayer.stop();
+          stop();
         },
         color: Colors.blue,
         textColor: Colors.white,
       )
     );
+  }
+
+  void stop() {
+    audioPlayer.stop();
   }
 
   Widget buildGenerateButton() {
@@ -91,9 +93,8 @@ class _PlayMusicState extends State<PlayMusic> {
     );
   }
 
-
   play() async {
-    var url = baseUrl + output;
+    var url = baseUrl + fileName;
     AudioPlayer.logEnabled = true;
     int result = await audioPlayer.play(url);
     if (result == 1) {
@@ -103,37 +104,26 @@ class _PlayMusicState extends State<PlayMusic> {
 
   void load() {
     setState(() {
-     load_text = 'Generating...'; 
+     loadText = 'Generating...'; 
     });
-    Future<Response> rsp;
-    rsp = fetchResponse();
-    print('LOAD: $rsp');
+    fetchResponse();
   }
 
-  Future<Response> fetchResponse() async {
+  void fetchResponse() async {
     final response =
-      await http.get('http://34.70.80.18:8000/generate').whenComplete((){
+      await http.get('http://35.225.134.65:8000/generate').whenComplete((){
         setState(() {
-         load_text = 'Generation Complete'; 
+         loadText = 'Generation Complete'; 
         });
       });
     print('VALUE: ${response.statusCode}');
     if (response.statusCode == 200) {
       var v = json.decode(response.body);
-      output = v["result"] ;
-      print('Response: $output');
-      return Response.fromJson(json.decode(response.body));
+      fileName = v["result"] ;
+      print('Response: $fileName');
     } else {
       print('FAILURE');
-      throw Exception('Failed to load post');
+      throw Exception('Failed to load');
     }
-  }
-}
-
-class Response {
-  String response;
-  Response(this.response);
-  factory Response.fromJson(Map<String, dynamic> json) {
-    return Response(json['result']);
   }
 }
