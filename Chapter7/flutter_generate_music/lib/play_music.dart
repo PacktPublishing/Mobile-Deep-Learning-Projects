@@ -14,8 +14,10 @@ class _PlayMusicState extends State<PlayMusic> {
   AudioPlayer audioPlayer = AudioPlayer();
   var baseUrl = 'http://34.70.80.18:8000/download/';
   var output = 'output_1573589840.mid';
+  String result;
+  String load_text = 'Generate Music';
 
-   @override
+  @override
   void initState() {
     super.initState();
   }
@@ -31,87 +33,101 @@ class _PlayMusicState extends State<PlayMusic> {
         children: <Widget>[
           buildPlayButton(),
           buildStopButton(),
-          buildGenerateButton()
+          buildGenerateButton(),
+          buildLoadingText()
         ],
       )
     );
   }
 
-  Widget buildPlayButton() {
-    
-     return Padding(
-       padding: EdgeInsets.all(16),
-       child: RaisedButton(
-        child: Text("Play"),
-        onPressed: () {
-           play();
-        },
-        ),
-      );
+  Widget buildPlayButton() { 
+    return Padding(
+    padding: EdgeInsets.only(left: 16, right: 16, top: 16),
+    child: RaisedButton(
+      child: Text("Play"),
+      onPressed: () {
+        play();
+      },
+      color: Colors.blue,
+      textColor: Colors.white,
+      ),
+    );
+  }
+
+  Widget buildLoadingText() {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.only(top: 16),
+        child: Text(load_text)
+      )
+    );
   }
 
   Widget buildStopButton() {
     return Padding( 
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.only(left: 16, right: 16, top: 16),
       child: RaisedButton(
-        child: Text("stop"),
+        child: Text("Stop"),
         onPressed: (){
           audioPlayer.stop();
         },
-        
+        color: Colors.blue,
+        textColor: Colors.white,
       )
-      );
+    );
   }
 
   Widget buildGenerateButton() {
-     return Padding(
-       padding: EdgeInsets.all(16),
-       child: RaisedButton(
+    return Padding(
+      padding: EdgeInsets.only(left: 16, right: 16, top: 16),
+      child: RaisedButton(
         child: Text("Generate Music"),
         onPressed: () {
           load();
         },
         color: Colors.blue,
-        ),
-      );
+        textColor: Colors.white,
+      ),
+    );
   }
 
 
-      play() async {
-        var url = baseUrl + output;
-        AudioPlayer.logEnabled = true;
-        int result = await audioPlayer.play(url);
-        if (result == 1) {
-          print('Success');
+  play() async {
+    var url = baseUrl + output;
+    AudioPlayer.logEnabled = true;
+    int result = await audioPlayer.play(url);
+    if (result == 1) {
+      print('Success');
       }
-
-  
-    }
-
-
-  
+  }
 
   void load() {
+    setState(() {
+     load_text = 'Generating...'; 
+    });
     Future<Response> rsp;
     rsp = fetchResponse();
     print('LOAD: $rsp');
   }
 
   Future<Response> fetchResponse() async {
-  final response =
-      await http.get('http://34.70.80.18:8000/generate');
-  print('VALUE: ${response.statusCode}');
-  if (response.statusCode == 200) {
-    var v = json.decode(response.body);
-    var l = v["result"] ;
-    print('Response: ${l}');
-    return Response.fromJson(json.decode(response.body));
-  } else {
-    // If that call was not successful, throw an error.
-    print('FAILURE');
-    throw Exception('Failed to load post');
+    final response =
+      await http.get('http://34.70.80.18:8000/generate').whenComplete((){
+        setState(() {
+         load_text = 'Generation Complete'; 
+        });
+      });
+    print('VALUE: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      var v = json.decode(response.body);
+      output = v["result"] ;
+      print('Response: $output');
+      return Response.fromJson(json.decode(response.body));
+    } else {
+      print('FAILURE');
+      throw Exception('Failed to load post');
+    }
   }
-}
 }
 
 class Response {
