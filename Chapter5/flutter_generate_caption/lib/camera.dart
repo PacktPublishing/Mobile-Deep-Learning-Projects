@@ -15,10 +15,11 @@ class _CameraState extends State<Camera> {
   @override
   void initState() {
     super.initState();
-
+    print("INSIDE CAMERA");
     if (widget.cameras == null || widget.cameras.length < 1) {
       print('No camera is found');
     } else {
+      print("INITIALIZING CONTROLLER");
       controller = new CameraController(
         widget.cameras[0],
         ResolutionPreset.medium,
@@ -30,6 +31,7 @@ class _CameraState extends State<Camera> {
         setState(() {});
 
         controller.startImageStream((CameraImage img) {
+          print("IMAGE STREAMING");
           if (!isDetecting) {
             isDetecting = true;
             int startTime = new DateTime.now().millisecondsSinceEpoch;  
@@ -47,5 +49,6 @@ class _CameraState extends State<Camera> {
       maxWidth: 200,
       child: CameraPreview(controller),
     );
+    //return Container(child: Text('Container'),);
   }
 }

@@ -3,13 +3,29 @@ import 'package:flutter/material.dart';
 import 'camera.dart';
 
 class Home extends StatefulWidget {
-  List<CameraDescription> camera;
-  Home(this.camera);
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  List<CameraDescription> cameras;
+  @override 
+  void initState() {
+    _initCamera();
+    }
+
+
+CameraController _controller;
+_initCamera() {
+  getLength();
+}
+
+Future<int> getLength() async {
+  cameras = await availableCameras().whenComplete((){
+    return cameras.length;
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +33,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          Camera(widget.camera),
+          //Camera(cameras),
           Text('Here is the text')
         ],
       )
