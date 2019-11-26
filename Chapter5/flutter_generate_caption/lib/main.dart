@@ -30,7 +30,6 @@ import 'package:http/http.dart'  as http;
 import 'package:dio/dio.dart';
 import 'dart:convert';
 
-
 List<CameraDescription> cameras;
 
 Future<void> main() async {
@@ -69,32 +68,79 @@ class _CameraAppState extends State<CameraApp> {
     final String dirPath = '${extDir.path}/Pictures/flutter_test';
     await Directory(dirPath).create(recursive: true);
     final String filePath = '$dirPath/${timestamp()}.jpg';
-    controller.takePicture(filePath);
-    print('FILE PATH:: ${filePath}');
-    getResponse(filePath);
+    controller.takePicture(filePath).then((_){
+      print('FILE PATH:: ${filePath}');
+    var s = Image.file(File(filePath));
+    File f = File(filePath);
+    String base64Image = base64Encode(f.readAsBytesSync());
+    print('IMAGE FILE:  $s');
+    //getResponse(filePath);
+    responsive(f);
+    });
+    
 
 }
 
-Future<void> getResponse (String filePath) async {
+Future<void> responsive(File img) async {
+    var url = 'http://api-os-max.apps.us-east-2.starter.openshift-online.com/model/predict';
+    Map<String, String> headers = {"accept": "application/json", "Content-Type": "multipart/form-data"};
+    String base64Image = base64Encode(img.readAsBytesSync());
+    String js = '{"image": ${img}, "type":"image/jpg"}';  // make POST request
+    final response = await http.post(url, headers: headers, body: js);
+    var j = json.decode(response.body);
+    print('RESPONSE : ${response.statusCode} , ${response.body}');
+}
+
+
+Future<void> getResponse (String f) async {
   var url = 'http://api-os-max.apps.us-east-2.starter.openshift-online.com/model/predict';
-  
+
+  // Map<String, String> headers = {"Content-type": "application/json"};
+  // String json = 'image=@${f}';  // make POST request
+  // Response response = await post(url, headers: headers, body: json);  // check the status code for the result
+  // int statusCode = response.statusCode;
+  // post
+  // print('GETTING RESPONSE: ${statusCode}');
+
+
+  // var d = dio.Dio();
+  // dio.FormData formData = new dio.FormData.fromMap({
+  //  "image": f
+  // });
+  // print('BEFORE RESPONSE');
+  // var response;
+  // try{
+  // response = await d.post(url, data: formData,).then((_){
+  //   print("RESPONSE IN: $response");
+  // });
+  // } catch(e) {
+  //   print("Response:: ${response}");
+  //   print('Exception:: ${e.toString()}');
+  // }
+  // print('AFTER RESPONSE');
+
+
   Dio dio = new Dio();
-  
   FormData formdata = new FormData();
-  
   Map<String, String> headers = {"accept": "application/json", "Content-Type":"multipart/form-data"};
 
 
   FormData formData = FormData.fromMap({
 
-    "image": await MultipartFile.fromFile("assets/img.jpg")
+    "image": await MultipartFile.fromFile(f)
 });
 final response= await dio.post(url, data: formData);
+
+  // formdata.add("image", new UploadFileInfo(f, basename(f.path)));
+  // String js = '{"image":${f}}';
+  // final response =
+  //     await http.post(url, headers: headers, body: js);
    print("RESPONSE CODE ${response.statusCode}");
    var j = json.decode(response.data);
     print('RESPONSE:: ${j}');
 
 }
+
 
   @override
   void dispose() {
