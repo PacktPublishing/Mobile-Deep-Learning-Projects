@@ -4,10 +4,14 @@ import 'package:http/http.dart'  as http;
 import 'package:dio/dio.dart';
 import 'package:camera/camera.dart';
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'dart:async';
 
 class CameraApp extends StatefulWidget {
   @override
   _CameraAppState createState() => _CameraAppState();
+  List<CameraDescription> cameras;
+  CameraApp(this.cameras);
 }
 
 class _CameraAppState extends State<CameraApp> {
@@ -17,7 +21,7 @@ class _CameraAppState extends State<CameraApp> {
   void initState() {
     
     super.initState();
-    controller = CameraController(cameras[0], ResolutionPreset.medium);
+    controller = CameraController(widget.cameras[0], ResolutionPreset.medium);
     controller.initialize().then((_) {
       if (!mounted) {
         return;
