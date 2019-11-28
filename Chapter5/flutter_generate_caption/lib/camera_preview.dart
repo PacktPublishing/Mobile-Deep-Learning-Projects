@@ -48,15 +48,13 @@ class _CameraAppState extends State<CameraApp> {
     //getResponse(filePath);
     responsive(f);
     });
-    
-
 }
 
 Future<void> responsive(File img) async {
     var url = 'http://api-os-max.apps.us-east-2.starter.openshift-online.com/model/predict';
     Map<String, String> headers = {"accept": "application/json", "Content-Type": "multipart/form-data"};
-    String base64Image = base64Encode(img.readAsBytesSync());
-    String js = '{"image": ${img}, "type":"image/jpg"}';  // make POST request
+    //String base64Image = base64Encode(img.readAsBytesSync());
+    String js = '{"image": ${img}}';  // make POST request
     final response = await http.post(url, headers: headers, body: js);
     var j = json.decode(response.body);
     print('RESPONSE : ${response.statusCode} , ${response.body}');
@@ -98,9 +96,29 @@ final response= await dio.post(url, data: formData);
     if (!controller.value.isInitialized) {
       return Container();
     }
-    return AspectRatio(
-        aspectRatio:
-        controller.value.aspectRatio,
-        child: CameraPreview(controller));
+    return _buildCameraPreview();
+  }
+
+  Widget _buildCameraPreview() {
+    //final size = MediaQuery.of(context).size;
+    var size = MediaQuery.of(context).size.width;
+    return Container(
+              width: size,
+              height: size,
+              child: ClipRect(
+                child: OverflowBox(
+                  alignment: Alignment.center,
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Container(
+                      width: size,
+                      height: size / controller.value.aspectRatio,
+                      child: CameraPreview(
+                          controller), // this is my CameraPreview
+                    ),
+                  ),
+                ),
+              ),
+            );
   }
 }
