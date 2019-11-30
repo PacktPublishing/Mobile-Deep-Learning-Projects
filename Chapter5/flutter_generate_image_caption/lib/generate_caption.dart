@@ -47,6 +47,10 @@ class _SquareCropCamState extends State<SquareCropCam> {
     //final size = MediaQuery.of(context).size;
     var size = MediaQuery.of(context).size.width;
     return Container(
+      child: Stack(
+        children: <Widget>[
+          Text('Here is the text'),
+          Container(
               width: size,
               height: size,
               child: ClipRect(
@@ -63,7 +67,29 @@ class _SquareCropCamState extends State<SquareCropCam> {
                   ),
                 ),
               ),
-            );
+            ),
+            
+        ],
+      ),
+    );
+    // return Container(
+    //           width: size,
+    //           height: size,
+    //           child: ClipRect(
+    //             child: OverflowBox(
+    //               alignment: Alignment.center,
+    //               child: FittedBox(
+    //                 fit: BoxFit.fitWidth,
+    //                 child: Container(
+    //                   width: size,
+    //                   height: size / _controller.value.aspectRatio,
+    //                   child: CameraPreview(
+    //                       _controller), // this is my CameraPreview
+    //                 ),
+    //               ),
+    //             ),
+    //           ),
+    //         );
   }
 
 

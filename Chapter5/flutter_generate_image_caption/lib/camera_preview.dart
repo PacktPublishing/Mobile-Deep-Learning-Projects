@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart'  as http;
-import 'package:dio/dio.dart';
 import 'package:camera/camera.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -69,6 +68,8 @@ Future<void> responsive(File img) async {
     }).then((res) {
       print(res.statusCode);
       print(res);
+      var r = json.decode(res.body);
+      print('Response :: ${r}');
     }).catchError((err) {
       print(err);
     });
@@ -118,23 +119,50 @@ Future<void> responsive(File img) async {
   Widget _buildCameraPreview() {
     //final size = MediaQuery.of(context).size;
     var size = MediaQuery.of(context).size.width;
-    return   Container(
-    width: size,
-    height: size,
-    child: ClipRect(
-      child: OverflowBox(
-        alignment: Alignment.center,
-        child: FittedBox(
-          fit: BoxFit.fitWidth,
-          child: Container(
-            width: size,
-            height:
-                size / controller.value.aspectRatio,
-            child: CameraPreview(controller), // this is my CameraPreview
-          ),
-        ),
+    return Scaffold(
+    body: Container(
+      child: Stack(
+        children: <Widget>[
+          Text('Here is the text',),
+          Container(
+              width: size,
+              height: size,
+              child: ClipRect(
+                child: OverflowBox(
+                  alignment: Alignment.center,
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Container(
+                      width: size,
+                      height: size / controller.value.aspectRatio,
+                      child: CameraPreview(
+                          controller), // this is my CameraPreview
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            
+        ],
       ),
-    ),
-  );
+    ));
+  //   return   Container(
+  //   width: size,
+  //   height: size,
+  //   child: ClipRect(
+  //     child: OverflowBox(
+  //       alignment: Alignment.center,
+  //       child: FittedBox(
+  //         fit: BoxFit.fitWidth,
+  //         child: Container(
+  //           width: size,
+  //           height:
+  //               size / controller.value.aspectRatio,
+  //           child: CameraPreview(controller), // this is my CameraPreview
+  //         ),
+  //       ),
+  //     ),
+  //   ),
+  // );
   }
 }
