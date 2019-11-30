@@ -15,6 +15,7 @@ class CameraApp extends StatefulWidget {
 
 class _CameraAppState extends State<CameraApp> {
   CameraController controller;
+  String rsp = "Fetching Response..";
 
   @override
   void initState() {
@@ -69,11 +70,30 @@ Future<void> responsive(File img) async {
       print(res.statusCode);
       print(res);
       var r = json.decode(res.body);
-      print('Response :: ${r}');
+      parseResponse(r);
     }).catchError((err) {
       print(err);
     });
 
+}
+
+// [{index: 0, caption: a laptop computer sitting on top of a bed ., probability: 0.000875693544750408}, 
+// {index: 1, caption: a laptop computer sitting on top of a table ., probability: 0.00016174037799549445}, 
+// {index: 2, caption: a laptop computer sitting on top of a wooden table ., probability: 0.00015052834799119907}]}
+
+void parseResponse(var reponse) {
+  String r = "";
+   var p = reponse['predictions'];
+   var l = p.length;
+   int i;
+   for(i = 0; i < l; i++){
+     var caption = p[i]['caption'];
+     var probablity = p[i]['probability'];
+     r = r + '${caption}: ${probablity}\n';
+   } 
+   setState(() {
+     rsp= r;
+   });
 }
 
 
@@ -120,10 +140,11 @@ Future<void> responsive(File img) async {
     //final size = MediaQuery.of(context).size;
     var size = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: AppBar(title: Text('Generate Image Caption'),),
     body: Container(
-      child: Stack(
+      child: Column(
         children: <Widget>[
-          Text('Here is the text',),
+          
           Container(
               width: size,
               height: size,
@@ -142,7 +163,7 @@ Future<void> responsive(File img) async {
                 ),
               ),
             ),
-            
+            Text(rsp),  
         ],
       ),
     ));
