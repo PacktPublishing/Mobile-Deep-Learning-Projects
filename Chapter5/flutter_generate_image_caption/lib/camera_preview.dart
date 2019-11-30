@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-// import 'package:http/http.dart'  as http;
-// import 'package:dio/dio.dart';
+import 'package:http/http.dart'  as http;
+import 'package:dio/dio.dart';
 import 'package:camera/camera.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -45,20 +45,36 @@ class _CameraAppState extends State<CameraApp> {
     File f = File(filePath);
     String base64Image = base64Encode(f.readAsBytesSync());
     print('IMAGE FILE:  $s');
+    
     //getResponse(filePath);
-    //responsive(f);
+    responsive(f);
     });
 }
 
-// Future<void> responsive(File img) async {
-//     var url = 'http://api-os-max.apps.us-east-2.starter.openshift-online.com/model/predict';
-//     Map<String, String> headers = {"accept": "application/json", "Content-Type": "multipart/form-data"};
-//     //String base64Image = base64Encode(img.readAsBytesSync());
-//     String js = '{"image": ${img}}';  // make POST request
-//     final response = await http.post(url, headers: headers, body: js);
-//     var j = json.decode(response.body);
-//     print('RESPONSE : ${response.statusCode} , ${response.body}');
-// }
+Future<void> responsive(File img) async {
+    var url = 'http://104.154.147.60:8000/predict';
+    Map<String, String> headers = {"accept": "application/json", "Content-Type": "multipart/form-data"};
+    // //String base64Image = base64Encode(img.readAsBytesSync());
+    // String js = '{"image": ${img}}';  // make POST request
+    // final response = await http.post(url, headers: headers, body: js);
+
+    String base64Image = base64Encode(img.readAsBytesSync());
+    String fileName = img.path.split("/").last;
+
+    print(base64Image);
+    
+    http.post(url, body: {
+      "image": base64Image,
+      "name": fileName,
+    }).then((res) {
+      print(res.statusCode);
+      print(res);
+    }).catchError((err) {
+      print(err);
+    });
+
+}
+
 
 
 // Future<void> getResponse (String f) async {
