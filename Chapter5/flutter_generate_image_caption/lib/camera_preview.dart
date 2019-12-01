@@ -102,19 +102,12 @@ class _CameraAppState extends State<CameraApp> {
             Container(
                 width: size,
                 height: size,
-                child: ClipRect(
-                  child: OverflowBox(
-                    alignment: Alignment.center,
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Container(
-                        width: size,
-                        height: size / controller.value.aspectRatio,
-                        child: CameraPreview(
-                            controller
-                        ),
-                      ),
-                    ),
+                alignment: Alignment.center,
+                child: Container(
+                  width: size,
+                  height: size / controller.value.aspectRatio,
+                  child: CameraPreview(
+                    controller
                   ),
                 ),
               ),
