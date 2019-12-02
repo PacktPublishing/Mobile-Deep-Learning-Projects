@@ -9,8 +9,7 @@ import 'dart:async';
 class GenerateLiveCaption extends StatefulWidget {
   @override
   _GenerateLiveCaptionState createState() => _GenerateLiveCaptionState();
-  List<CameraDescription> cameras;
-  GenerateLiveCaption(this.cameras);
+  GenerateLiveCaption();
 }
 
 class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
@@ -20,8 +19,7 @@ class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
 
   @override
   void initState() {
-    super.initState();
-    
+    super.initState();   
     detectCameras().then((_){
       initializeController();
     });

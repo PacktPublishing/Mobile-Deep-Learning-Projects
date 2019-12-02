@@ -1,19 +1,9 @@
 import 'package:flutter/material.dart';
 import 'generate_live_caption.dart';
-import 'package:camera/camera.dart';
 
-//void main() => runApp(MyApp());
-
-List<CameraDescription> cameras;
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  cameras = await availableCameras();
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,7 +11,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: GenerateLiveCaption(cameras)
+      home: GenerateLiveCaption()
     );
   }
 }
