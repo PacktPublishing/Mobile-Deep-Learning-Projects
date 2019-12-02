@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'generate_caption.dart';
-import 'camera_preview.dart';
+import 'generate_live_caption.dart';
 import 'package:camera/camera.dart';
 
 //void main() => runApp(MyApp());
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: CameraApp(cameras)
+      home: GenerateLiveCaption(cameras)
     );
   }
 }

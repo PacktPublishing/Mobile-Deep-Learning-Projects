@@ -6,14 +6,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class CameraApp extends StatefulWidget {
+class GenerateLiveCaption extends StatefulWidget {
   @override
-  _CameraAppState createState() => _CameraAppState();
+  _GenerateLiveCaptionState createState() => _GenerateLiveCaptionState();
   List<CameraDescription> cameras;
-  CameraApp(this.cameras);
+  GenerateLiveCaption(this.cameras);
 }
 
-class _CameraAppState extends State<CameraApp> {
+class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
   CameraController controller;
   String rsp = "Fetching Response..";
 
