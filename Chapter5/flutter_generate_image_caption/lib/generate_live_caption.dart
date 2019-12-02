@@ -16,19 +16,31 @@ class GenerateLiveCaption extends StatefulWidget {
 class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
   CameraController controller;
   String rsp = "Fetching Response..";
+  List<CameraDescription> cameras;
 
   @override
   void initState() {
     super.initState();
-    controller = CameraController(widget.cameras[0], ResolutionPreset.medium);
-    controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {});
-      const oneSec = const Duration(seconds:5);
-      new Timer.periodic(oneSec, (Timer t) => capturePictures());
+    
+    detectCameras().then((_){
+      initializeController();
     });
+  }
+
+  void initializeController() {
+    controller = CameraController(cameras[0], ResolutionPreset.medium);
+      controller.initialize().then((_) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {});
+        const oneSec = const Duration(seconds:5);
+        new Timer.periodic(oneSec, (Timer t) => capturePictures());
+    });
+  }
+
+  Future<void> detectCameras() async {
+    cameras = await availableCameras();
   }
 
  capturePictures() async {
@@ -85,36 +97,25 @@ class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
 
   @override
   Widget build(BuildContext context) {
-    if (!controller.value.isInitialized) {
-      return Container();
-    }
-    return _buildCameraPreview();
+    return Scaffold(
+      appBar: AppBar(title: Text('Generate Image Caption'),),
+      body: (controller.value.isInitialized)?_buildCameraPreview():new Container(),
+      );
   }
 
   Widget _buildCameraPreview() {
     var size = MediaQuery.of(context).size.width;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Generate Image Caption'),),
-      body: Container(
+      return Container(
         child: Column(
           children: <Widget>[
-            Container(
+              Container(
                 width: size,
                 height: size,
-                alignment: Alignment.center,
-                child: Container(
-                  width: size,
-                  height: size / controller.value.aspectRatio,
-                  child: CameraPreview(
-                    controller
-                  ),
-                ),
+                child: CameraPreview(controller),
               ),
               Text(rsp),  
           ]
-        ),
-      )
-    );
+        )
+      );
   }
 }
