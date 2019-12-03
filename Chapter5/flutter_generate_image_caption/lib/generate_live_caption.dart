@@ -14,7 +14,7 @@ class GenerateLiveCaption extends StatefulWidget {
 
 class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
   CameraController controller;
-  String rsp = "Fetching Response..";
+  String resultText = "Fetching Response..";
   List<CameraDescription> cameras;
 
   @override
@@ -32,8 +32,8 @@ class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
           return;
         }
         setState(() {});
-        const oneSec = const Duration(seconds:5);
-        new Timer.periodic(oneSec, (Timer t) => capturePictures());
+        const interval = const Duration(seconds:5);
+        new Timer.periodic(interval, (Timer t) => capturePictures());
     });
   }
 
@@ -42,11 +42,11 @@ class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
   }
 
  capturePictures() async {
-   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
+   String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
    final Directory extDir = await getApplicationDocumentsDirectory();
    final String dirPath = '${extDir.path}/Pictures/flutter_test';
    await Directory(dirPath).create(recursive: true);
-   final String filePath = '$dirPath/${timestamp()}.jpg';
+   final String filePath = '$dirPath/${timestamp}.jpg';
    controller.takePicture(filePath).then((_){
      File imgFile = File(filePath);
      fetchResponse(imgFile);
@@ -63,8 +63,6 @@ class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
       "image": base64Image,
       "name": fileName,
     }).then((res) {
-      print(res.statusCode);
-      print(res);
       var r = json.decode(res.body);
       parseResponse(r);
     }).catchError((err) {
@@ -72,18 +70,16 @@ class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
     });
   }
 
-  void parseResponse(var reponse) {
+  void parseResponse(var response) {
     String r = "";
-    var p = reponse['predictions'];
-    var l = p.length;
-    int i;
-    for(i = 0; i < l; i++){
-      var caption = p[i]['caption'];
-      var probablity = p[i]['probability'];
-      r = r + '${caption}: ${probablity}\n';
-    } 
+    var predictions = response['predictions'];
+    for(var prediction in predictions) {
+      var caption = prediction['caption'];
+      var probability = prediction['probability'];
+      r = r + '${caption}: ${probability}\n\n';
+    }
     setState(() {
-      rsp= r;
+      resultText = r;
     });
   }
 
@@ -97,23 +93,23 @@ class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Generate Image Caption'),),
-      body: (controller.value.isInitialized)?_buildCameraPreview():new Container(),
+      body: (controller.value.isInitialized)? buildCameraPreview():new Container(),
       );
   }
 
-  Widget _buildCameraPreview() {
+  Widget buildCameraPreview() {
     var size = MediaQuery.of(context).size.width;
-      return Container(
-        child: Column(
-          children: <Widget>[
-              Container(
-                width: size,
-                height: size,
-                child: CameraPreview(controller),
-              ),
-              Text(rsp),  
-          ]
-        )
-      );
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: size,
+            height: size,
+            child: CameraPreview(controller),
+          ),
+          Text(resultText),
+        ]
+      )
+    );
   }
 }
