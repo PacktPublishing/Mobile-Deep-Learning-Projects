@@ -63,8 +63,8 @@ class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
       "image": base64Image,
       "name": fileName,
     }).then((res) {
-      var r = json.decode(res.body);
-      parseResponse(r);
+      var resString = json.decode(res.body);
+      parseResponse(resString);
     }).catchError((err) {
       print(err);
     });
