@@ -51,27 +51,23 @@ class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
    final String filePath = '$dirPath/${timestamp}.png';
    controller.takePicture(filePath).then((_){
      File imgFile = File(filePath);
-     _uploadImage(imgFile);
+     FetchResponse(imgFile);
      });
   }
 
-  Future<Map<String, dynamic>> _uploadImage(File image) async {
-    // Find the mime type of the selected file by looking at the header bytes of the file
+  Future<Map<String, dynamic>> FetchResponse(File image) async {
+    
     final mimeTypeData =
         lookupMimeType(image.path, headerBytes: [0xFF, 0xD8]).split('/');
-    // Intilize the multipart request
+    
     final imageUploadRequest = http.MultipartRequest(
         'POST',
         Uri.parse(
             "http://max-image-caption-generator-mytest865.apps.us-east-2.starter.openshift-online.com/model/predict"));
-    // Attach the file in the request
+    
     final file = await http.MultipartFile.fromPath('image', image.path,
         contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
-    // Explicitly pass the extension of the image with request body
-    // Since image_picker has some bugs due which it mixes up
-    // image extension with file name like this filenamejpge
-    // Which creates some problem at the server side to manage
-    // or verify the file extension
+    
     imageUploadRequest.fields['ext'] = mimeTypeData[1];
     imageUploadRequest.files.add(file);
     try {
@@ -87,7 +83,6 @@ class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
     }
   }
 
-  
   void parseResponse(var response) {
     String r = "";
     var predictions = response['predictions'];
