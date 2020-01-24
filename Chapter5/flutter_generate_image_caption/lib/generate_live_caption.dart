@@ -87,23 +87,7 @@ class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
     }
   }
 
-  Future<void> fetchResponse(File imgFile) async {
-    var url = 'http://max-image-caption-generator-mytest865.apps.us-east-2.starter.openshift-online.com/model/predict';
-
-    String base64Image = base64Encode(imgFile.readAsBytesSync());
-    String fileName = imgFile.path.split("/").last;
-    
-    http.post(url, body: {
-      "image": base64Image,
-      "name": fileName,
-    }).then((res) {
-      var r = json.decode(res.body);
-      parseResponse(r);
-    }).catchError((err) {
-      print(err);
-    });
-  }
-
+  
   void parseResponse(var response) {
     String r = "";
     var predictions = response['predictions'];
