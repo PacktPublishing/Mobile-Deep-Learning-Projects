@@ -1,0 +1,9 @@
+tensorflow==1.14
+tensorflow-gpu==1.14
+keras==2.2.5
+profilehooks
+numpy
+pyperclip
+python-chess==0.22.1
+ujson
+h5py
