@@ -5,6 +5,8 @@ import 'package:camera/camera.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
 
 class GenerateLiveCaption extends StatefulWidget {
   @override
@@ -46,28 +48,39 @@ class _GenerateLiveCaptionState extends State<GenerateLiveCaption> {
    final Directory extDir = await getApplicationDocumentsDirectory();
    final String dirPath = '${extDir.path}/Pictures/flutter_test';
    await Directory(dirPath).create(recursive: true);
-   final String filePath = '$dirPath/${timestamp}.jpg';
+   final String filePath = '$dirPath/${timestamp}.png';
    controller.takePicture(filePath).then((_){
      File imgFile = File(filePath);
-     fetchResponse(imgFile);
+     FetchResponse(imgFile);
      });
   }
 
-  Future<void> fetchResponse(File imgFile) async {
-    var url = 'http://104.154.147.60:8000/predict';
-
-    String base64Image = base64Encode(imgFile.readAsBytesSync());
-    String fileName = imgFile.path.split("/").last;
+  Future<Map<String, dynamic>> FetchResponse(File image) async {
     
-    http.post(url, body: {
-      "image": base64Image,
-      "name": fileName,
-    }).then((res) {
-      var r = json.decode(res.body);
-      parseResponse(r);
-    }).catchError((err) {
-      print(err);
-    });
+    final mimeTypeData =
+        lookupMimeType(image.path, headerBytes: [0xFF, 0xD8]).split('/');
+    
+    final imageUploadRequest = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            "http://max-image-caption-generator-mytest865.apps.us-east-2.starter.openshift-online.com/model/predict"));
+    
+    final file = await http.MultipartFile.fromPath('image', image.path,
+        contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
+    
+    imageUploadRequest.fields['ext'] = mimeTypeData[1];
+    imageUploadRequest.files.add(file);
+    try {
+      final streamedResponse = await imageUploadRequest.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      parseResponse(responseData);
+      return responseData;
+
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   void parseResponse(var response) {
