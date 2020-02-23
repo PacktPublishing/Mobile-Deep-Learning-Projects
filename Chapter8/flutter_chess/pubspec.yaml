@@ -19,9 +19,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  chess: ">=0.6.5 <1.0.0"
   chess_vectors_flutter: ">=1.0.6 <2.0.0"
-  scoped_model: ">=1.0.0 <2.0.0"
+  http:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
