@@ -13,9 +13,9 @@ class ImageSuperResolution extends StatefulWidget {
 }
 
 class _ImageSuperResolutionState extends State<ImageSuperResolution> {
-  
-  Image img1 = Image(  width: 200, height: 200, image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),);
 
+  var img1 = Image.asset('assets/place_holder_image.png');
+  var img2 = Image.asset('assets/place_holder_image.png');
   
   @override
   Widget build(BuildContext context) {
@@ -25,8 +25,10 @@ class _ImageSuperResolutionState extends State<ImageSuperResolution> {
       ),
       body: Container(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget> [
-          buildImageRow(),
+          buildImage1(),
+          buildImage2(),
           buildPickImageButton()
         ]
       )
@@ -34,18 +36,30 @@ class _ImageSuperResolutionState extends State<ImageSuperResolution> {
     );
   }
 
-  Widget buildImageRow() {
 
-    return Container(
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        img1,
-        img1
-      ],
-    )
+  Widget buildImage1() {
+    return Container (
+      height: 200, 
+      width: 200,
+      child: img1
     );
   }
+
+  Widget buildImage2() {
+    return Container (
+      width: 200,
+      height: 200,
+      child: img2
+      );
+  }
+
+  // Widget buildImageRow() {
+  //   return Container (
+  //     width: 200,
+  //     height: 200,
+  //     child: Image(image: NetworkImage('http://35.223.166.50:8080/download/output_1583568677.png'))
+  //   );
+  // }
 
   Widget buildPickImageButton() {
     return FloatingActionButton( 
@@ -81,8 +95,8 @@ class _ImageSuperResolutionState extends State<ImageSuperResolution> {
       final streamedResponse = await imageUploadRequest.send();
       final response = await http.Response.fromStream(streamedResponse);
       print(' Status Code: ${response.statusCode}');
-      // var responseData = json.decode(response.body);
-      // print("FETCH RESPONSE: ${response.statusCode}, ${response.toString()}");
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      String outputFile = responseData['result'];
 
     } catch (e) {
       print(e);
@@ -90,18 +104,16 @@ class _ImageSuperResolutionState extends State<ImageSuperResolution> {
     }
   }
 
-  // void loadImage(File file) async {
-  //   final data = await file.readAsBytes();
-  //   await decodeImageFromList(data).then(
-  //     (value) => setState(() {
-  //       img1 = value as Image;
-  //     }),
-  //   );
-  // }
+  void displayResponseImage(String outputFile) {
+    outputFile = 'http://35.223.166.50:8080/download/' + outputFile;
+    setState(() {
+      img2 = NetworkImage(outputFile) as Image;
+    });
+  }
 
   void loadImage(File file) {
     setState(() {
-      img1 =Image.file(file);
+      img1 = Image.file(file);
     });
   }
 
