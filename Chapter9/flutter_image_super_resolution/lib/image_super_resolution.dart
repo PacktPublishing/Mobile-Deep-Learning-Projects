@@ -16,7 +16,8 @@ class _ImageSuperResolutionState extends State<ImageSuperResolution> {
     'assets/place_holder_image.png',
     fit: BoxFit.contain,
   );
-  var img2 = AssetImage('assets/place_holder_image.png');
+
+  Widget imageOutput = Image.asset('assets/place_holder_image.png');
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class _ImageSuperResolutionState extends State<ImageSuperResolution> {
         child: SizedBox(
             width: 200, 
             height: 200, 
-            child: Image(image: NetworkImage(url))
+            child: imageOutput
           )
     );
   }
@@ -103,7 +104,7 @@ class _ImageSuperResolutionState extends State<ImageSuperResolution> {
     print("Updating Image");
     outputFile = 'http://35.223.166.50:8080/download/' + outputFile;
     setState(() {
-      url = outputFile;
+      imageOutput = Image(image: NetworkImage(outputFile));
     });
   }
 
