@@ -48,8 +48,8 @@ class _ImageSuperResolutionState extends State<ImageSuperResolution> {
   }
 
     Widget buildImageOutput() {
-    return Container(
-        child: SizedBox(
+    return Expanded(
+        child: Container(
             width: 200, 
             height: 200, 
             child: imageOutput
