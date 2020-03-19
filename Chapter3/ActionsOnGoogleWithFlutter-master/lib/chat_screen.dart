@@ -18,7 +18,7 @@ class ChatScreenState extends State<ChatScreen> {
   String transcription = '';
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     activateSpeechRecognizer();
   }
@@ -26,39 +26,85 @@ class ChatScreenState extends State<ChatScreen> {
   void activateSpeechRecognizer() {
     _speechRecognition = SpeechRecognition();
 
-    _speechRecognition.setAvailabilityHandler((bool result)
-    => setState(() => _isAvailable = result));
+    _speechRecognition.setAvailabilityHandler(
+        (bool result) => setState(() => _isAvailable = result));
 
+    _speechRecognition.setRecognitionStartedHandler(
+        () => setState(() => _isListening = true));
 
-    _speechRecognition.setRecognitionStartedHandler(()
-    => setState(() => _isListening = true));
+    _speechRecognition.setRecognitionResultHandler(
+        (String text) => setState(() => transcription = text));
 
-    _speechRecognition.setRecognitionResultHandler((String text)
-    => setState(() => transcription = text));
-
-    _speechRecognition.setRecognitionCompleteHandler(()
-    => setState(() => _isListening = false));
+    _speechRecognition.setRecognitionCompleteHandler(
+        () => setState(() => _isListening = false));
 
     _speechRecognition
         .activate()
         .then((res) => setState(() => _isAvailable = res));
   }
 
-
   Future _handleSubmitted(String query) async {
-    AuthGoogle authGoogle = await AuthGoogle(fileJson: "assets/gcp-api.json").build();
-    Dialogflow dialogflow = Dialogflow(authGoogle: authGoogle,language: Language.english);
+    AuthGoogle authGoogle =
+        await AuthGoogle(fileJson: "assets/gcp-api.json").build();
+    Dialogflow dialogflow =
+        Dialogflow(authGoogle: authGoogle, language: Language.english);
     AIResponse response = await dialogflow.detectIntent(query);
     print(response.getMessage());
     String rsp = response.getMessage();
 
     _textController.clear();
     ChatMessage message = new ChatMessage(
-      query: query, response: rsp,
+      query: query,
+      response: rsp,
     );
     setState(() {
       _messages.insert(0, message);
     });
+  }
+
+  Widget createTextField() {
+    return new Flexible(
+      child: new TextField(
+        decoration:
+            new InputDecoration.collapsed(hintText: "Enter your message"),
+        controller: _textController,
+        onSubmitted: _handleSubmitted,
+      ),
+    );
+  }
+
+  Widget createSendButton() {
+    return new Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: new IconButton(
+        icon: new Icon(Icons.send),
+        onPressed: () => _handleSubmitted(_textController.text),
+      ),
+    );
+  }
+
+  Widget createMicButton() {
+    return new Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: new IconButton(
+          icon: new Icon(Icons.mic),
+          onPressed: () {
+            if (_isAvailable && !_isListening) {
+              _speechRecognition.recognitionStartedHandler();
+              _speechRecognition
+                  .listen(locale: "en_US")
+                  .then((transcription) => print('$transcription'));
+            } else if (_isListening) {
+              _isListening = false;
+              transcription = '';
+              _handleSubmitted(transcription);
+              _speechRecognition
+                  .stop()
+                  .then((result) => setState(() => _isListening = result));
+            }
+          } //Pressed
+          ),
+    );
   }
 
   Widget _buildTextComposer() {
@@ -68,41 +114,9 @@ class ChatScreenState extends State<ChatScreen> {
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: new Row(
           children: <Widget>[
-            new Flexible(
-              child: new TextField(
-                decoration:
-                new InputDecoration.collapsed(hintText: "Enter your message"),
-                controller: _textController,
-                onSubmitted: _handleSubmitted,
-              ),
-            ),
-            new Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: new IconButton(
-                icon: new Icon(Icons.send),
-                onPressed: () => _handleSubmitted(_textController.text),
-              ),
-            ),
-            new Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: new IconButton(
-                  icon: new Icon(Icons.mic),
-                  onPressed: () {
-                    if(_isAvailable && !_isListening) {
-                      _speechRecognition.recognitionStartedHandler();
-                      _speechRecognition
-                          .listen(locale: "en_US")
-                          .then((transcription) => print('$transcription'));
-                    } else if(_isListening) {
-                      _isListening = false;
-                      transcription = '';
-                      _handleSubmitted(transcription);
-                      _speechRecognition.stop().then(
-                              (result) => setState(() => _isListening = result));
-                    }
-                  } //Pressed
-              ),
-            ),
+            createTextField(),
+            createSendButton(),
+            createMicButton()
           ],
         ),
       ),
